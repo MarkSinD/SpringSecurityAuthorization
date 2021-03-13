@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+a. Существует большое количество http методов:
+    Get
+    Post
+    Put
+    Patch
+    Delete
+    Copy
+    Head
+    Options
+    Link
+    Unlink
+    Purge
+    Lock
+    Unlock
+    Propfind
+    View
+
+В Spring Config можно разрешать и запрещать эти методы для каждого пользователя
+    http
+    .csrf().disable()
+    .authorizeRequests()
+    .antMatchers("/").permitAll()
+    .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+    .antMatchers(HttpMethod.POST, "/api/**").hasRole(Role.ADMIN.name())
+    .antMatchers(HttpMethod.DELETE, "/api/**").hasAnyRole(Role.ADMIN.name())
+    .anyRequest()
+    .authenticated()
+    .and()
+    .httpBasic();
+
+Get и Post отличаются между собой тем, что в Post мы можем написать тело, например, в
+Postman. Get легче, так как его размер составляет всего 255 символов, а размер Post
+может содержать в себе 8Кб, а это достаточно для внутреннего сообщения.
+
+Переопределяя HTTP методы мы добиваемся того, что сможем управлять ими как рычагами
+в будующем для:
+    1) Удаления
+    2) Управления
+    3) Обновления
+    4) Добавления
+    5) Изменения
+данных.
+
+index.html по умолчанию является домашней страницей с корневым доступом от URL.
+
+
+</body>
+</html>

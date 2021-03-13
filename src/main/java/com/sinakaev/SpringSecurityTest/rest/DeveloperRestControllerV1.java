@@ -1,10 +1,7 @@
 package com.sinakaev.SpringSecurityTest.rest;
 
 import com.sinakaev.SpringSecurityTest.model.Developer;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,12 +30,18 @@ public class DeveloperRestControllerV1 {
         return DEVELOPERS;
     }
 
+    // @PathVeriable выдергивает id из URL и присваивает в id
+    // Крайне полезная вещь для REST FUL
     @GetMapping("/{id}")
     public Developer getById(@PathVariable Long id){
-
-        //
         return DEVELOPERS.stream().filter(developer -> developer.getId().equals(id))
                 .findFirst().orElse(null);
+    }
+
+    @PostMapping
+    public Developer create(@RequestBody Developer developer){
+        this.DEVELOPERS.add(developer);
+        return developer;
     }
 }
 /**
