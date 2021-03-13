@@ -41,3 +41,12 @@ public class DeveloperRestControllerV1 {
                 .findFirst().orElse(null);
     }
 }
+/**
+ *
+ * PostMan помогает сгенерировать Header на
+ * основе введенных данных в формате
+ * Authorization - basic auth
+ *
+ * PostMan интегрирует пароль и логин в пакет
+ *
+ */
