@@ -51,6 +51,144 @@ Postman. Get легче, так как его размер составляет 
 
 index.html по умолчанию является домашней страницей с корневым доступом от URL.
 
+Т.к. базы данных нет, тогда используется класс-имитатор InMemoryUserDetailsManager
+В этот класс вы должны загрузить конструктор с аргументами, которые содержат
+USER.
+    User.builder()
+    .username("admin")
+    .password(passwordEncoder().encode("admin"))
+    .roles(Role.ADMIN.name())
+    .build()
+
+passwordEncoder().encode("admin") вставляет BCrypt password в inMemory хранилище UserDetaile.
+User реализует интерфейс UserDetails. UserDetails содержит метод.
+Одна из реализаций интерфейса UserDetailService является InMemoryUserDetailsManager,
+с аргументами, которые включают в себя User.
+
+b. Можно давать роли и права на работу с данными:
+    1) Роль, которой позволено удаление с сервера
+    2) Роль, которой позволено чтение с сервера
+    Поэтому есть Permision это дополнительное свойство,
+которое позволяет опреленять доступность определенного ресурса.
+
+Авторизация пользователя на основании прав (authorities).
+Ключевым звеном этого подхода является permission( англ.Разрешение).
+Реобходимо давать определенной Role свои права на работу с данными.
+Role будет присвоено произвольное количество permission.
+Например:
+    1) developers:read
+    2) developers:write
+Для того, чтобы реализовать технологию Permission, нужно создать ее отображение
+в нашей системе.
+
+GrantedAuthority(англ. Предоставленные полномочия)
+SimpleGrantedAuthority - эта сущность позволяет определить кто к чему имеет доступ.
+Перед конфигурированием spring security необходимо для начала обернуть обьекты аутентификации в
+формат SimpleGrantedAuthority.
+
+
+Метод в Spring Security, который определяет конфигурацию авторизации. Если метод не переопределять
+тогда не получится установить свой источник представлений и модели. К переопределению обязателен.
+
+Version 1. Default Configuration
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    super.configure(http);
+}
+В этом случае WebSecurityConfigurerAdapter имеет метод configure, который дает
+информацию о пользователях с представлением Spring Security по умолчанию.
+
+
+
+Version 2. Configuration with Roles technology
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers("/").permitAll()
+        .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
+        .antMatchers(HttpMethod.POST, "/api/**").hasRole(Role.ADMIN.name())
+        .antMatchers(HttpMethod.DELETE, "/api/**").hasAnyRole(Role.ADMIN.name())
+        .anyRequest()
+        .authenticated()
+        .and()
+        .httpBasic();
+}
+
+Пример Использования
+Самую базовую конфигурацию, основанную на форме, можно увидеть ниже.
+Конфигурация потребует, чтобы для любого запрашиваемого URL-адреса
+требовался пользователь с ролью "ROLE_USER". Он также определяет
+схему аутентификации в памяти с пользователем, имеющим имя пользователя "user",
+пароль "password" и роль "ROLE_USER". Дополнительные примеры см. В документе Java Doc отдельных методов on HttpSecurity.
+
+@Configuration
+@EnableWebSecurity
+public class FormLoginSecurityConfig extends WebSecurityConfigurerAdapter {
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests (). antMatchers("/**").hasRole("USER").and().formLogin();
+}
+
+@Override
+protected void configure(AuthenticationManagerBuilder auth)  throws Exception {
+    auth.inMemoryAuthentication().withUser("пользователь").password("пароль").roles("пользователь");
+}
+}
+
+Задает свойства:
+1) Matchers
+2) Role
+http.authorizeRequests (). antMatchers("/**").hasRole("USER").and().formLogin();
+
+Определяет схему аутентификации в памяти с пользователем
+auth.inMemoryAuthentication().withUser("пользователь").password("пароль").roles("пользователь");
+
+
+Version 3. Configuration with Permission technology
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers("/").permitAll()
+        .antMatchers(HttpMethod.GET, "/api/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
+        .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
+        .antMatchers(HttpMethod.DELETE, "/api/**").hasAnyRole(Permission.DEVELOPERS_WRITE.getPermission())
+        .anyRequest()
+        .authenticated()
+        .and()
+        .httpBasic();
+}
+
+Встроенная в коробку технология Permission лучше справляется с разрешением доступа к сети,
+чем Role.
+
+В том случае мы должны определить кастомную конфигурацию с Ролями с разрешенным доступом.
+
+
+Сначала необходимо создать экземпляр WebSecurityConfigurerAdapter,
+содержащий @Order, чтобы указать, какой WebSecurityConfigurerAdapter
+следует рассматривать в первую очередь.
+Если URL-адрес не начинается с / api /, будет использоваться эта конфигурация.
+Эта конфигурация рассматривается после ApiWebSecurityConfigurationAdapter,
+поскольку она имеет значение @Order после 1 (по умолчанию @Order не является последним).
+
+Технология хранения в массивах на этом этапе разработки показывает насколько
+хорошо работают, в сравнении, базы данных. При каждом запуске массив инициализируется заново.
+
+Система Authorities предполагает сначала определить какой доступ разрешен каждому пользователю.
+
+
+Принцип работы Permission.
+Принцип огранизуется при помощи 2 классов:
+1) Developer
+2) Permission
+
+
 
 </body>
 </html>
