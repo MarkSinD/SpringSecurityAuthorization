@@ -185,9 +185,56 @@ protected void configure(HttpSecurity http) throws Exception {
 
 Принцип работы Permission.
 Принцип огранизуется при помощи 2 классов:
-1) Developer
+1) Role
 2) Permission
 
+public enum Permission {
+
+    DEVELOPERS_READ("developers:read"),
+    DEVELOPERS_WRITE("developers:write");
+
+    private final String permission;
+
+    Permission(String permission){
+        this.permission = permission;
+    }
+    public String getPermission(){
+        return permission;
+    }
+}
+
+Класс Permission является частью класса Role. Это называется композиция.
+Одна роль может иметь какое-то число Permission.
+public enum Role {
+USER(Set.of(Permission.DEVELOPERS_READ)),
+ADMIN(Set.of(Permission.DEVELOPERS_READ, Permission.DEVELOPERS_WRITE));
+
+private final Set<Permission> permissions;
+
+    Role(Set<Permission> permissions) {
+        this.permissions = permissions;
+        }
+
+        public Set<Permission> getPermissions() {
+            return permissions;
+            }
+
+            public Set<SimpleGrantedAuthority> getAuthorities(){
+                return getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .collect(Collectors.toSet());
+                } }
+
+getAuthority
+публичная строка getAuthority()
+Описание скопировано из интерфейса: GrantedAuthority
+Если GrantedAuthorityзначение не может быть выражено с достаточной точностью в виде аString, nullто оно должно быть возвращено. Возвращение nullпотребует Ан AccessDecisionManager (или делегировать) для конкретной поддержкиGrantedAuthority реализация, поэтому возвращения nullследует избегать, если это действительно не требуется.
+
+Уточняется по:
+getAuthority в интерфейсе GrantedAuthority
+ВОЗВРАТ:
+представление предоставленной власти
+(или nullесли предоставленная власть не может быть выражена как A Stringс достаточной точностью).
 
 
 </body>

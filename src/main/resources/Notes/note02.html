@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+c. @EnableGlobalMethodSecurity(prePostEnabled = true)
+аннотация помогает найти анотации @PreAuthorize("hasAuthority('developers:read'))").
+@PreAuthorize("hasAuthority('developers:read'))") аннотация позволяет дать права на выполнение
+вызовов конроллеров.
+
+В методе configure(HttpSecurity http)
+http
+.csrf().disable()
+.authorizeRequests()
+.antMatchers("/").permitAll()
+.anyRequest()
+.authenticated()
+.and()
+.httpBasic();
+httpBasic() - это метод для удобной работы с PostMan
+Его нужно изменить на formLogin()
+
+Сессия создается в сущности.
+Добавление в конфигурацию Spring Security для реализации logout.
+.and()
+.logout()
+.logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+.invalidateHttpSession(true)
+.deleteCookies("JSESSIONID")
+.logoutSuccessUrl("/auth/login");
+
+
+logout передается по умолчанию при помощи метода get. Возвращать logout при помощи get небезопасно
+поэтому logout необходимо переопределить.
+
+.logout()
+.logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+.invalidateHttpSession(true)
+.deleteCookies("JSESSIONID")
+.logoutSuccessUrl("/auth/login");// Изменение httpBasic() на formLogin()
+
+
+Существует такая сущность SpringSecurityHolder. В ней хранится весь секьюрный контекст:
+1) Доступ в ресурсам( Authority)
+
+В случае работы с inMemory мы создаем User из реализации с Spring Security
+
+</body>
+</html>

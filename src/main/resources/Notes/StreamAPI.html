@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+    // @PathVeriable выдергивает id из URL и присваивает в id
+    // Крайне полезная вещь для REST FUL
+    @GetMapping("/{id}")
+    public Developer getById(@PathVariable Long id){
+    return DEVELOPERS.stream().filter(developer -> developer.getId().equals(id))
+    .findFirst().orElse(null);
+    }
+
+
+    DEVELOPERS.removeIf(developer -> developer.getId().equals(id));
+
+
+
+</body>
+</html>
