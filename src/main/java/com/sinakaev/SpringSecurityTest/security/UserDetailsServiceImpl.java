@@ -1,8 +1,9 @@
 package com.sinakaev.SpringSecurityTest.security;
 
 import com.sinakaev.SpringSecurityTest.model.User;
-import com.sinakaev.SpringSecurityTest.repository.UserRepository;
+import com.sinakaev.SpringSecurityTest.dao.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,16 +22,16 @@ import org.springframework.stereotype.Service;
 @Service("userDetailsServiceImpl")
 class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserDetailsServiceImpl(@Qualifier("userServiceImpl") UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        User user = userService.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User doesn't exists"));
         return SecurityUser.fromUser(user);
     }

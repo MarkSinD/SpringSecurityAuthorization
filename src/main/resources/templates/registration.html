@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+
+<div class="container">
+
+    <h3>Employee Directory</h3>
+    <hr>
+
+    <p class="h4 mb-4">Save Employee</p>
+
+    <form action="#" th:action="@{/auth/registration}"
+          th:object="${newUser}" method="POST">
+
+        <table>
+
+            <input type="hidden" th:field="*{id}" />
+
+
+            <tr>
+                <td> <input type="text" th:field="*{email}" class="form-control mb-4 col-4" placeholder="email"></td>
+                <td> <p th:if="${#fields.hasErrors('email')}">Incorrect email</p></td>
+            </tr>
+            <tr>
+                <td> <input type="password" th:field="*{password}" class="form-control mb-4 col-4" placeholder="password"></td>
+                <td> <p th:if="${#fields.hasErrors('password')}">Incorrect password</p> </td>
+            </tr>
+            <tr>
+                <td> <input type="password" th:field="*{confirmPassword}" class="form-control mb-4 col-4" placeholder="confirm password"> </td>
+                <td> <p th:if="${#fields.hasErrors('confirmPassword')}">Incorrect confirm password</p> </td>
+            </tr>
+            <tr>
+                <td> <input type="text" th:field="*{firstName}" class="form-control mb-4 col-4" placeholder="first name"> </td>
+                <td> <p th:if="${#fields.hasErrors('firstName')}">Incorrect first name</p> </td>
+            </tr>
+            <tr>
+                <td> <input type="text" th:field="*{lastName}"  class="form-control mb-4 col-4" placeholder="last name"> </td>
+                <td> <p th:if="${#fields.hasErrors('lastName')}">Incorrect last name</p> </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" class="btn btn-info col-2">Save</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <hr>
+    <a th:href="@{/auth/login}">Back to login</a>
+
+</div>
+
+</body>
+</html>
+

@@ -1,7 +1,6 @@
-package com.sinakaev.SpringSecurityTest.repository;
+package com.sinakaev.SpringSecurityTest.security;
 
 import com.sinakaev.SpringSecurityTest.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
@@ -11,6 +10,7 @@ import java.util.Optional;
  * @author Mark Sinakaev
  * @version 1.0
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserService {
+    void save(User user);
     Optional<User> findByEmail(String email);
 }

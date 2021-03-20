@@ -2,6 +2,7 @@ package com.sinakaev.SpringSecurityTest.model;
 
 import lombok.Data;
 import lombok.Generated;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -31,6 +32,9 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @Transient
+    private String confirmPassword;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
     private Role role;
@@ -38,6 +42,5 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     private Status status;
-
 
 }

@@ -48,5 +48,25 @@ logout передается по умолчанию при помощи мето
 
 В случае работы с inMemory мы создаем User из реализации с Spring Security
 
+Add hidden form field to handle update
+<input type="hidden" th:field="*{id}" />
+
+<div class="form-group ${status.error ? 'has-error' : ''}">
+    <input type="text" th:field="*{email}"
+           class="form-control mb-4 col-4" placeholder="email">
+    <br>
+    <input type="text" th:field="*{password}"
+           class="form-control mb-4 col-4" placeholder="password">
+    <br>
+    <input type="text" th:field="*{confirmPassword}"
+           class="form-control mb-4 col-4" placeholder="confirm password">
+    <br>
+    <input type="text" th:field="*{firstName}"
+           class="form-control mb-4 col-4" placeholder="first name">
+    <br>
+    <input type="text" th:field="*{lastName}"
+           class="form-control mb-4 col-4" placeholder="last name">
+    <br>
+
 </body>
 </html>
